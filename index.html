@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MiniProj1 — SPA CV</title>
+
+    <!-- Fonte & Icons (CDN) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+    <!-- Estilos mínimos (look profissional e limpo) -->
+    <style>
+        :root{
+            --bg:#f7f7f8; --fg:#0f172a; --muted:#475569; --brand:#2563eb; --card:#ffffff; --border:#e5e7eb;
+        }
+        *{box-sizing:border-box}
+        html,body{margin:0;height:100%;scroll-behavior:smooth}
+        body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--fg)}
+        .container{max-width:980px;margin:0 auto;padding:24px}
+        /* NAV */
+        header{position:sticky;top:0;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);z-index:50}
+        .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+        .brand{font-weight:600}
+        .menu{display:flex;gap:12px}
+        .menu a{padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--muted);font-weight:600}
+        .menu a.active,.menu a:hover{color:white;background:var(--brand)}
+        /* SECÇÕES */
+        section{padding:56px 0}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px}
+        h1,h2{margin:0 0 12px}
+        p{line-height:1.6;color:var(--muted);margin:0 0 12px}
+        ul{margin:0 0 0 18px;color:var(--muted)}
+        /* FOOTER */
+        footer{border-top:1px solid var(--border);padding:24px 0;margin-top:40px}
+        .social{display:flex;gap:12px}
+        .social a{width:38px;height:38px;border:1px solid var(--border);border-radius:10px;display:grid;place-items:center;color:var(--muted);text-decoration:none}
+        .social a:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+        /* Responsivo */
+        @media (max-width:640px){ .menu{flex-wrap:wrap} }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- Navegação SPA -->
+    <header>
+        <div class="container nav">
+            <div class="brand">{{ nome }}</div>
+            <nav class="menu" aria-label="Navegação principal">
+                <a href="#quem"    :class="{active: secao==='quem'}"    @click.prevent="secao='quem'">Quem Sou Eu</a>
+                <a href="#oque"    :class="{active: secao==='oque'}"    @click.prevent="secao='oque'">O que faço</a>
+                <a href="#hobbies" :class="{active: secao==='hobbies'}" @click.prevent="secao='hobbies'">Hobbies</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Quem Sou Eu -->
+        <section id="quem" v-show="secao==='quem'">
+            <div class="card">
+                <h1>Quem Sou Eu</h1>
+                <p><strong>{{ nome }}</strong> — <span>{{ titulo }}</span></p>
+                <p>{{ bio }}</p>
+                <ul>
+                    <li><strong>Email:</strong> {{ contactos.email }}</li>
+                    <li><strong>Localização:</strong> {{ contactos.local }}</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- O que faço -->
+        <section id="oque" v-show="secao==='oque'">
+            <div class="card">
+                <h2>O que faço</h2>
+                <p>{{ resumoProf }}</p>
+                <ul>
+                    <li v-for="item in skills" :key="item">{{ item }}</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Hobbies -->
+        <section id="hobbies" v-show="secao==='hobbies'">
+            <div class="card">
+                <h2>Hobbies</h2>
+                <ul>
+                    <li v-for="h in hobbies" :key="h">{{ h }}</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Rodapé com redes sociais -->
+        <footer>
+            <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+                <small>&copy; {{ new Date().getFullYear() }} {{ nome }} — Identidade digital</small>
+                <div class="social" aria-label="Redes sociais">
+                    <!-- Substitui os # pelos teus links -->
+                    <a :href="redes.github"   target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a :href="redes.linkedin" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a :href="redes.twitter"  target="_blank" aria-label="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+                    <a :href="redes.facebook" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+        </footer>
+    </main>
+</div>
+
+<!-- Vue 3 (CDN) -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script>
+const { createApp } = Vue;
+
+createApp({
+    data(){
+        return {
+            secao: 'quem', // controla a navegação SPA (sem recarregar a página)
+            nome: '<<O TEU NOME AQUI>>',
+            titulo: 'Currículo vitae — Programação Web Avançada',
+            bio: 'Profissional com interesse em desenvolvimento Web moderno (SPA, PWA) e integração front-end/back-end.',
+            contactos: {
+                email: '<<teu.email@exemplo.pt>>',
+                local: 'Lisboa, Portugal'
+            },
+            resumoProf: 'Desenvolvimento front-end com foco em acessibilidade, performance e integração via APIs REST.',
+            skills: [
+                'HTML5, CSS3, JavaScript (ES6+)',
+                'Vue.js (componentes, estado, diretivas)',
+                'Integração com APIs REST/JSON',
+                'Controlo de versão com Git e GitHub Pages'
+            ],
+            hobbies: ['Fotografia', 'Ciclismo', 'Tecnologia', 'Leitura'],
+            redes: {
+                github:   '#',
+                linkedin: '#',
+                twitter:  '#',
+                facebook: '#'
+            }
+        }
+    }
+}).mount('#app');
+</script>
+</body>
+</html>
